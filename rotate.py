@@ -2,6 +2,7 @@ import math
 import os
 import os.path
 import sys
+from random import randint
 from PIL import Image
 
 def image_rotate(in_file_path, out_dir):
@@ -25,7 +26,12 @@ def image_rotate(in_file_path, out_dir):
     #img_rot = img.rotate(angle)
     #img_rot.save("out.jpg")
 
-    for angle in range(0, 360, 30):
+    #for angle in range(0, 360, 30):
+
+    for i in range(0, 12):
+
+        angle = i*30 + randint(0,29)
+        print(angle)
 
         img_rot = img.rotate(angle)
         box = img_rot.crop(area)
