@@ -55,4 +55,6 @@ if __name__ == '__main__':
 
     in_dir = in_dir.rstrip('/')
     out_dir = out_dir.rstrip('/')
+    os.system('mkdir -p {0}'.format(out_dir))
+
     rotate_all_dir(in_dir, out_dir)

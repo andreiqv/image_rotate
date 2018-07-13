@@ -32,6 +32,7 @@ print('train size:', train['size'])
 print('valid size:', valid['size'])
 print('test size:', test['size'])
 im0 = train['images'][0]
+print('Data was imported.')
 print(im0.shape)
 #sys.exit()
 
@@ -154,6 +155,10 @@ with graph.as_default():
                 valid_accuracy = loss.eval(feed_dict = {x:valid['images'], y:valid['labels']})
                 print('\nstep {0:3}: train_acc={1:0.3f}, valid_acc={2:0.3f}'.\
                     format(step, train_accuracy, valid_accuracy))
+
+                output_values = output.eval(feed_dict = {x:valid['images']})
+                print(output_values)
+                print(valid['labels'])
 
                 """
                 train_accuracy = accuracy.eval(
