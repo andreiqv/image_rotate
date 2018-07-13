@@ -5,6 +5,8 @@ import sys
 from random import randint
 from PIL import Image
 
+import cPickle as pickle
+
 def image_rotate(in_file_path, out_dir):
 
     print(in_file_path)
@@ -21,12 +23,6 @@ def image_rotate(in_file_path, out_dir):
     print('sx={0}, sy={1}'.format(sx,sy))
     print('cx={0}, cy={1}'.format(cx,cy))
     print('d={0:.3f}, a={1:.3f}'.format(d,a))
-
-    #angle = -27
-    #img_rot = img.rotate(angle)
-    #img_rot.save("out.jpg")
-
-    #for angle in range(0, 360, 30):
 
     for i in range(0, 12):
 
