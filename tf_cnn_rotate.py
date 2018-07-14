@@ -8,9 +8,10 @@ in
 - reshape - 1024 - dense -dense - mse
 """
 
+# export CUDA_VISIBLE_DEVICES=1
+
 from __future__ import absolute_import,  division, print_function
 import tensorflow as tf
-# Import the training data (MNIST)
 import sys
 import numpy as np
 np.set_printoptions(precision=4, suppress=True)
@@ -18,6 +19,7 @@ np.set_printoptions(precision=4, suppress=True)
 #import load_data
 import _pickle as pickle
 import gzip
+
 
 
 data_file = "dump.gz"
@@ -32,7 +34,7 @@ print('train size:', train['size'])
 print('valid size:', valid['size'])
 print('test size:', test['size'])
 im0 = train['images'][0]
-print('Data was imported.')
+print('Data was loaded.')
 print(im0.shape)
 #sys.exit()
 
@@ -122,7 +124,9 @@ with graph.as_default():
 
     # 2. Add nodes that represent the optimization algorithm.
 
-    loss = tf.reduce_mean(tf.squared_difference(y, output))
+    #loss = tf.reduce_mean(tf.squared_difference(y, output))
+    loss = tf.nn.l2_loss(output - y)
+    #loss = tf.losses.mean_squared_error(labels=y, predictions=output)
     train_op = tf.train.AdagradOptimizer(0.01).minimize(loss)
     #train_op = tf.train.GradientDescentOptimizer(0.01).minimize(loss)
     
@@ -140,10 +144,10 @@ with graph.as_default():
         for step in range(NUM_STEPS):                # Train iteratively for NUM_STEPS.            
             #x_data, y_data = mnist.train.next_batch(BATCH_SIZE) # Load one batch of input data
             
-            x_data = train['images']\
-                [step*BATCH_SIZE % SAMPLE_SIZE : (step+1)*BATCH_SIZE % SAMPLE_SIZE]
-            y_data = train['labels']\
-                [step*BATCH_SIZE % SAMPLE_SIZE : (step+1)*BATCH_SIZE % SAMPLE_SIZE]
+            a1 = step*BATCH_SIZE % train['size']
+            a2 = (step+1)*BATCH_SIZE % train['size']
+            x_data = train['images'][a1:a2]
+            y_data = train['labels'][a1:a2]
             if len(x_data) <= 0: continue
 
             sess.run(train_op, {x: x_data, y: y_data})      # Perform one training step.
