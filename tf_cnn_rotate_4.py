@@ -45,9 +45,9 @@ valid['images'] = [np.transpose(t) for t in valid['images']]
 test['images'] = [np.transpose(t) for t in test['images']]
 
 
-BATCH_SIZE = 5
+BATCH_SIZE = 20
 SAMPLE_SIZE = train['size']
-NUM_STEPS = 1000
+NUM_STEPS = 10000
 
 # some functions
 
@@ -80,7 +80,7 @@ with graph.as_default():
 	x_image = tf.reshape(x, [-1,540,540,1])
 
 	# 1: conv layer 1
-	num_filters_1 = 8
+	num_filters_1 = 16
 	W1 = weight_variable([5, 5, 1, num_filters_1], name='W1')  # 32 features, 5x5
 	b1 = bias_variable([num_filters_1], name='b1')
 	h1 = tf.nn.relu(conv2d(x_image, W1, name='conv1') + b1, name='relu1')
@@ -89,7 +89,7 @@ with graph.as_default():
 	# 180 x 180
 		
 	# 2: conv layer 2
-	num_filters_2 = 16
+	num_filters_2 = 32
 	W2 = weight_variable([4, 4, num_filters_1, num_filters_2], name='W2')  
 	b2 = bias_variable([num_filters_2], name='b2')
 	h2 = tf.nn.relu(conv2d(p1, W2, name='conv2') + b2, name='relu2')
@@ -98,7 +98,7 @@ with graph.as_default():
 	# 60 x 60 
 
 	# 3: conv layer 3
-	num_filters_3 = 16
+	num_filters_3 = 64
 	W3 = weight_variable([3, 3, num_filters_2, num_filters_3], name='W3')  
 	b3 = bias_variable([num_filters_3], name='b3')
 	h3 = tf.nn.relu(conv2d(p2, W3, name='conv3') + b3, name='relu3')
@@ -118,19 +118,18 @@ with graph.as_default():
 	num_neurons_5 = 1
 	W5 = weight_variable([num_neurons_4, num_neurons_5], name='W5')
 	b5 = bias_variable([num_neurons_5], name='b5')
-	#h5 = tf.nn.relu(tf.matmul(h4, W5) + b5, name='relu5')
-	h5 = tf.matmul(h4, W5) + b5
+	h5 = tf.nn.relu(tf.matmul(h4, W5) + b5, name='relu5')
+	#h5 = tf.matmul(h4, W5) + b5
 	print('h5 =', h5)
 
 	# 6: output layer
-	"""
 	num_neurons_6 = 1
 	W6 = weight_variable([num_neurons_5, num_neurons_6], name='W6')
 	b6 = bias_variable([num_neurons_6], name='b6')
-	h6 = tf.nn.relu(tf.matmul(h5, W6) + b6)
-	"""
+	#h6 = tf.nn.relu(tf.matmul(h5, W6) + b6)
+	h6 = tf.matmul(h5, W6) + b6
 
-	output = h5
+	output = h6
 	print('output =', output)
 
 	# 2. Add nodes that represent the optimization algorithm.
@@ -166,16 +165,16 @@ with graph.as_default():
 			if step % 5 == 0:			  
 
 				print('Validation:')
-				output_values = output.eval(feed_dict = {x:train['images']})
+				output_values = output.eval(feed_dict = {x:train['images'][:3]})
 				print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0]*360))
 				print('train: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, train['labels'][1]*360))
 				print('train: {0:.2f} - {1:.2f}'.format(output_values[2][0]*360, train['labels'][2]*360))
-				output_values = output.eval(feed_dict = {x:valid['images']})
+				output_values = output.eval(feed_dict = {x:valid['images'][:2]})
 				print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0]*360))
 				print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1]*360))
 
-				train_accuracy = loss.eval(feed_dict = {x:train['images'], y:train['labels']})
-				valid_accuracy = loss.eval(feed_dict = {x:valid['images'], y:valid['labels']})
+				train_accuracy = loss.eval(feed_dict = {x:train['images'][0:BATCH_SIZE], y:train['labels'][0:BATCH_SIZE]})
+				valid_accuracy = loss.eval(feed_dict = {x:valid['images'][0:BATCH_SIZE], y:valid['labels'][0:BATCH_SIZE]})
 				print('step {0:3}: train_acc={1:0.4f}, valid_acc={2:0.4f}\n'.\
 					format(step, train_accuracy, valid_accuracy))
 
@@ -201,7 +200,7 @@ with graph.as_default():
 		writer.close()  
 
 		# Test of model
-		test_accuracy = accuracy.eval(feed_dict={x:x_test, y:y_test})
+		test_accuracy = accuracy.eval(feed_dict={x:x_test[0:BATCH_SIZE], y:y_test[0:BATCH_SIZE]})
 		print('Test of model')
 		print('Test_accuracy={0:0.4f}'.format(test_accuracy))
 
