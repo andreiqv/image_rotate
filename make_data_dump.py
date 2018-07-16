@@ -31,6 +31,10 @@ def load_data(in_dir, img_size=(540,540)):
         angle = name.split('_')[-1]
         lable = float(angle) / 360.0
 
+        if type(lable)!=float:
+            print('type(lable)!=float')
+            raise Exception('lable type is not float')
+
         print('{0}: {1:.3f}, {2}' .format(angle, lable, file_name))
         data['images'].append(arr)
         data['labels'].append(lable)
