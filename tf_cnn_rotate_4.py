@@ -162,7 +162,7 @@ with graph.as_default():
 			if len(x_data) <= 0: continue
 			#print(a1, a2, y_data)			
 
-			if step % 5 == 0:			  
+			if step % 20 == 0:			  
 
 				print('Validation:')
 				output_values = output.eval(feed_dict = {x:train['images'][:3]})
