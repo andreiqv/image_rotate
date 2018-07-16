@@ -45,7 +45,7 @@ valid['images'] = [np.transpose(t) for t in valid['images']]
 test['images'] = [np.transpose(t) for t in test['images']]
 
 
-BATCH_SIZE = 10
+BATCH_SIZE = 5
 SAMPLE_SIZE = train['size']
 NUM_STEPS = 5000
 
@@ -154,7 +154,7 @@ with graph.as_default():
 		sess.run(init)	# Randomly initialize weights.
 		for step in range(NUM_STEPS):			  # Train iteratively for NUM_STEPS.		 
 
-			if step % 20 == 0:			  
+			if step % 10 == 0:			  
 
 				print('Validation:')
 				output_values = output.eval(feed_dict = {x:train['images'][:3]})
@@ -167,6 +167,21 @@ with graph.as_default():
 
 				train_accuracy = loss.eval(feed_dict = {x:train['images'][0:BATCH_SIZE], y:train['labels'][0:BATCH_SIZE]})
 				valid_accuracy = loss.eval(feed_dict = {x:valid['images'][0:BATCH_SIZE], y:valid['labels'][0:BATCH_SIZE]})
+				
+				num_train_batches = train['size'] // BATCH_SIZE
+				num_valid_batches = valid['size'] // BATCH_SIZE
+				print('num_train_batches', num_train_batches)
+				print('num_valid_batches', num_valid_batches)
+
+				train_accuracy = np.mean( [loss.eval( \
+					feed_dict={x:train['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+					y:train['labels'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}) \
+					for i in range(0,num_train_batches)])
+				valid_accuracy = np.mean([ loss.eval( \
+					feed_dict={x:valid['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+					y:valid['labels'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}) \
+					for i in range(0,num_valid_batches)])
+
 				print('step {0:3}: train_acc={1:0.4f}, valid_acc={2:0.4f}\n'.\
 					format(step, train_accuracy, valid_accuracy))
 
@@ -198,7 +213,12 @@ with graph.as_default():
 		writer.close()  
 
 		# Test of model
-		test_accuracy = loss.eval(feed_dict={x:x_test[0:BATCH_SIZE], y:y_test[0:BATCH_SIZE]})
+		#test_accuracy = loss.eval(feed_dict={x:test['images'][0:BATCH_SIZE], y:test['labels'][0:BATCH_SIZE]})
+		num_test_batches = test['size'] // BATCH_SIZE
+		test_accuracy = np.mean([ loss.eval( \
+			feed_dict={x:test['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+			y:test['labels'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}) \
+			for i in range(num_test_batches) ])
 		print('Test of model')
 		print('Test_accuracy={0:0.4f}'.format(test_accuracy))
 
