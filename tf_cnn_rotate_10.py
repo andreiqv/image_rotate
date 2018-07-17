@@ -22,6 +22,7 @@ iteration 420: train_acc=0.2516, valid_acc=0.2653
 from __future__ import absolute_import,  division, print_function
 import tensorflow as tf
 import sys
+import math
 import numpy as np
 np.set_printoptions(precision=4, suppress=True)
 
@@ -142,7 +143,7 @@ with graph.as_default():
 
 	f1 = fullyConnectedLayer(p_flat, input_size=fullconn_input_size, num_neurons=1024, 
 		func=tf.nn.relu, name='F1')
-	
+
 	drop1 = tf.layers.dropout(inputs=f1, rate=0.4)	
 	f2 = fullyConnectedLayer(drop1, input_size=1024, num_neurons=256, 
 		func=tf.nn.relu, name='F2')
@@ -175,15 +176,17 @@ with graph.as_default():
 		sess.run(init)	# Randomly initialize weights.
 		for iteration in range(NUM_ITERS):			  # Train iteratively for NUM_iterationS.		 
 
-			if iteration % 50 == 0:			  
+			if iteration % 500 == 0:
 
-				#print('Validation:')
-				output_values = output.eval(feed_dict = {x:train['images'][:3]})
+				#output_values = output.eval(feed_dict = {x:train['images'][:3]})
 				#print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0]*360))
 				#print('train: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, train['labels'][1]*360))
-				output_values = output.eval(feed_dict = {x:valid['images'][:2]})
-				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0]*360))
-				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1]*360))
+				output_values = output.eval(feed_dict = {x:valid['images'][:3]})
+				print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0]*360))
+				print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1]*360))
+				print('valid: {0:.2f} - {1:.2f}'.format(output_values[2][0]*360, valid['labels'][2]*360))
+
+			if iteration % 50 == 0:
 
 				train_accuracy = np.mean( [loss.eval( \
 					feed_dict={x:train['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
@@ -197,8 +200,9 @@ with graph.as_default():
 				if valid_accuracy < min_valid_accuracy:
 					min_valid_accuracy = valid_accuracy
 
-				print('iteration {0:3}: train_acc={1:0.4f}, valid_acc={2:0.4f} (min={3:0.4f})'.\
-					format(iteration, train_accuracy, valid_accuracy, min_valid_accuracy))
+				min_in_grad = math.sqrt(min_valid_accuracy) * 360.0
+				print('iter {0:3}: train_loss={1:0.4f}, valid_loss={2:0.4f} (min={3:0.4f} ({4:0.2f} gr.))'.\
+					format(iteration, train_accuracy, valid_accuracy, min_valid_accuracy, min_in_grad))
 
 				"""
 				#train_accuracy = loss.eval(feed_dict = {x:train['images'][0:BATCH_SIZE], y:train['labels'][0:BATCH_SIZE]})
