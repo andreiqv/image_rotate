@@ -5,8 +5,6 @@ import sys
 from random import randint
 from PIL import Image
 
-import cPickle as pickle
-
 def image_rotate(in_file_path, out_dir):
 
 	print(in_file_path)
