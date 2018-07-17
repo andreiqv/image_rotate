@@ -142,9 +142,13 @@ with graph.as_default():
 
 	f1 = fullyConnectedLayer(p_flat, input_size=fullconn_input_size, num_neurons=1024, 
 		func=tf.nn.relu, name='F1')
-	f2 = fullyConnectedLayer(f1, input_size=1024, num_neurons=256, 
-		func=tf.nn.relu, name='F2')	
-	f3 = fullyConnectedLayer(f2, input_size=256, num_neurons=1, 
+	
+	drop1 = tf.layers.dropout(inputs=f1, rate=0.4)	
+	f2 = fullyConnectedLayer(drop1, input_size=1024, num_neurons=256, 
+		func=tf.nn.relu, name='F2')
+	
+	drop2 = tf.layers.dropout(inputs=f2, rate=0.4)	
+	f3 = fullyConnectedLayer(drop2, input_size=256, num_neurons=1, 
 		func=None, name='F3')	
 
 	output = f3
