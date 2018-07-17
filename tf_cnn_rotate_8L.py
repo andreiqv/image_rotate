@@ -29,8 +29,8 @@ np.set_printoptions(precision=4, suppress=True)
 import _pickle as pickle
 import gzip
 
-BATCH_SIZE = 5
-NUM_ITERS = 5000
+BATCH_SIZE = 10
+NUM_ITERS = 500000
 
 data_file = "dump.gz"
 f = gzip.open(data_file, 'rb')
@@ -210,15 +210,15 @@ with graph.as_default():
 		sess.run(init)	# Randomly initialize weights.
 		for iteration in range(NUM_ITERS):			  # Train iteratively for NUM_iterationS.		 
 
-			if iteration % 10 == 0:			  
+			if iteration % 50 == 0:			  
 
 				#print('Validation:')
 				output_values = output.eval(feed_dict = {x:train['images'][:3]})
 				#print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0]*360))
 				#print('train: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, train['labels'][1]*360))
 				output_values = output.eval(feed_dict = {x:valid['images'][:2]})
-				print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0]*360))
-				print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1]*360))
+				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0]*360))
+				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1]*360))
 
 				train_accuracy = loss.eval(feed_dict = {x:train['images'][0:BATCH_SIZE], y:train['labels'][0:BATCH_SIZE]})
 				valid_accuracy = loss.eval(feed_dict = {x:valid['images'][0:BATCH_SIZE], y:valid['labels'][0:BATCH_SIZE]})
@@ -233,7 +233,7 @@ with graph.as_default():
 					y:valid['labels'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}) \
 					for i in range(0,num_valid_batches)])
 
-				print('iteration {0:3}: train_acc={1:0.4f}, valid_acc={2:0.4f}\n'.\
+				print('iteration {0:3}: train_acc={1:0.4f}, valid_acc={2:0.4f}'.\
 					format(iteration, train_accuracy, valid_accuracy))
 
 				"""
