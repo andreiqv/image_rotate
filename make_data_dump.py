@@ -1,4 +1,4 @@
-в#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import os
@@ -15,6 +15,7 @@ np.set_printoptions(precision=4, suppress=True)
 def load_data(in_dir, img_size=(540,540)):
 
 	data = dict()
+	data['filenames'] = []
 	data['images'] = []
 	data['labels'] = []
 
@@ -40,6 +41,7 @@ def load_data(in_dir, img_size=(540,540)):
 		print('{0}: {1:.3f}, {2}' .format(angle, lable, file_name))
 		data['images'].append(arr)
 		data['labels'].append(lable)
+		data['filenames'].append(file_name)
 
 	return data
 	#return train, valid, test
@@ -61,12 +63,15 @@ def split_data(data, ratio=(6,1,3)):
 
 	data_train['images'] = data['images'][ : len_train]
 	data_train['labels'] = data['labels'][ : len_train]
+	data_train['filenames'] = data['filenames'][ : len_train]
 
 	data_valid['images'] = data['images'][len_train : len_train + len_valid]
 	data_valid['labels'] = data['labels'][len_train : len_train + len_valid]
+	data_valid['filenames'] = data['filenames'][len_train : len_train + len_valid]
 
 	data_test['images'] = data['images'][len_train + len_valid : ]
 	data_test['labels'] = data['labels'][len_train + len_valid : ]
+	data_test['filenames'] = data['filenames'][len_train + len_valid : ]
   
 	data_train['size'] = len(data_train['images'])
 	data_valid['size'] = len(data_valid['images'])

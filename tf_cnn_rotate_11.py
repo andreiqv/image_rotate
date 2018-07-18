@@ -33,7 +33,7 @@ import gzip
 from rotate_images import *
 
 BATCH_SIZE = 3
-NUM_ITERS = 100
+NUM_ITERS = 20
 
 data_file = "dump.gz"
 f = gzip.open(data_file, 'rb')
@@ -191,10 +191,14 @@ with graph.as_default():
 
 				output_angles_valid = []
 				for i in range(num_valid_batches):
-					feed_dict = {x:valid['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
-						y:valid['labels'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}
-					print(feed_dict)
-					output_angles_valid += output.eval(feed_dict=feed_dict)
+					feed_dict = {x:valid['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}
+					#print(feed_dict)
+					output_values = output.eval(feed_dict=feed_dict)
+					#print(i, output_values)
+					#print(output_values.shape)
+					t = [output_values[i][0]*360.0 for i in range(output_values.shape[0])]
+					#print(t)
+					output_angles_valid += t
 				print(output_angles_valid)
 
 
@@ -250,7 +254,7 @@ with graph.as_default():
 		# Rotate images:
 		in_dir = 'data'
 		out_dir = 'valid'
-		file_names = valid['file_names']
+		file_names = valid['filenames']
 		angles = output_angles_valid
 		rotate_images_with_angles(in_dir, out_dir, file_names, angles)
 
