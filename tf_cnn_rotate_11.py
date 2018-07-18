@@ -32,8 +32,8 @@ import gzip
 
 from rotate_images import *
 
-BATCH_SIZE = 3
-NUM_ITERS = 20
+BATCH_SIZE = 5
+NUM_ITERS = 200
 
 data_file = "dump.gz"
 f = gzip.open(data_file, 'rb')
@@ -179,7 +179,7 @@ with graph.as_default():
 		sess.run(init)	# Randomly initialize weights.
 		for iteration in range(NUM_ITERS):			  # Train iteratively for NUM_iterationS.		 
 
-			if iteration % 5 == 0:
+			if iteration % 500 == 0:
 
 				#output_values = output.eval(feed_dict = {x:train['images'][:3]})
 				#print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0]*360))
@@ -202,7 +202,7 @@ with graph.as_default():
 				print(output_angles_valid)
 
 
-			if iteration % 5 == 0:
+			if iteration % 50 == 0:
 
 				train_accuracy = np.mean( [loss.eval( \
 					feed_dict={x:train['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
