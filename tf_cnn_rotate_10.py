@@ -127,7 +127,6 @@ with graph.as_default():
 	
 	x_image = tf.reshape(x, [-1,540,540,1])
 
-
 	# conv layers
 	p1 = convPoolLayer(x_image, kernel=(5,5), pool_size=3, num_in=1, num_out=16, 
 		func=tf.nn.relu, name='1') # 180 x 180

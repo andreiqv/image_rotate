@@ -159,7 +159,8 @@ with graph.as_default():
 
 	# 2. Add nodes that represent the optimization algorithm.
 
-	loss = tf.reduce_mean(tf.square(output - y))
+	#loss = tf.reduce_mean(tf.square(output - y))
+	loss = tf.reduce_mean(tf.abs(1 -  tf.abs(tf.abs(output - y) - 1 ))) # 
 	#loss = tf.reduce_mean(tf.squared_difference(y, output))
 	#loss = tf.nn.l2_loss(output - y)
 	#loss = tf.losses.mean_squared_error(labels=y, predictions=output)
@@ -215,7 +216,9 @@ with graph.as_default():
 				if valid_accuracy < min_valid_accuracy:
 					min_valid_accuracy = valid_accuracy
 
-				min_in_grad = math.sqrt(min_valid_accuracy) * 360.0
+				#min_in_grad = math.sqrt(min_valid_accuracy) * 360.0
+				min_in_grad = min_valid_accuracy * 360.0
+				
 				print('iter {0:3}: train_loss={1:0.4f}, valid_loss={2:0.4f} (min={3:0.4f} ({4:0.2f} gr.))'.\
 					format(iteration, train_accuracy, valid_accuracy, min_valid_accuracy, min_in_grad))
 
