@@ -192,7 +192,7 @@ with graph.as_default():
 				output_angles_valid = []
 				for i in range(num_valid_batches):
 					feed_dict = {x:valid['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}
-					print(feed_dict)
+					#print(feed_dict)
 					output_values = output.eval(feed_dict=feed_dict)
 					#print(i, output_values)
 					#print(output_values.shape)
