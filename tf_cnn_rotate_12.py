@@ -123,7 +123,7 @@ with graph.as_default():
 
 	# 1. Construct a graph representing the model.
 	x = tf.placeholder(tf.float32, [None, 540, 540]) # Placeholder for input.
-	y = tf.placeholder(tf.float32, [None])   # Placeholder for labels.
+	y = tf.placeholder(tf.float32, [None, 1])   # Placeholder for labels.
 	
 	x_image = tf.reshape(x, [-1, 540, 540, 1])
 
@@ -162,8 +162,8 @@ with graph.as_default():
 	#loss = tf.reduce_mean(tf.square(output - y))
 	#loss = tf.reduce_mean(tf.abs(1 -  tf.abs(tf.abs(output - y) - 1 ))) # 
 	#loss = tf.reduce_mean(tf.squared_difference(y, output))
-	loss = tf.nn.l2_loss(output - y)
-	#loss = tf.losses.mean_squared_error(labels=y, predictions=output)
+	#loss = tf.nn.l2_loss(output - y)
+	loss = tf.losses.mean_squared_error(labels=y, predictions=output)
 	
 	train_op = tf.train.AdagradOptimizer(0.01).minimize(loss)
 	#train_op = tf.train.GradientDescentOptimizer(0.001).minimize(loss)
