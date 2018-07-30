@@ -29,11 +29,12 @@ np.set_printoptions(precision=4, suppress=True)
 #import load_data
 import _pickle as pickle
 import gzip
-
 from rotate_images import *
 
+DISPLAY_INTERVAL = 1 # =10
+
 BATCH_SIZE = 5
-NUM_ITERS = 5000
+NUM_ITERS = 50 # 50000
 
 data_file = "dump.gz"
 f = gzip.open(data_file, 'rb')
@@ -61,9 +62,12 @@ num_test_batches = test['size'] // BATCH_SIZE
 print('num_train_batches:', num_train_batches)
 print('num_valid_batches:', num_valid_batches)
 print('num_test_batches:', num_test_batches)
-
 SAMPLE_SIZE = train['size']
 min_valid_accuracy = 1000
+
+print('Example of data. Item 0:')
+print('x:', train['images'][0])
+print('y:', train['labels'][0])
 
 
 # some functions
@@ -179,15 +183,15 @@ with graph.as_default():
 		sess.run(init)	# Randomly initialize weights.
 		for iteration in range(NUM_ITERS):			  # Train iteratively for NUM_iterationS.		 
 
-			if iteration % 200 == 0:
+			if iteration % (20*DISPLAY_INTERVAL) == 0:
 
 				#output_values = output.eval(feed_dict = {x:train['images'][:3]})
-				#print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0]*360))
-				#print('train: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, train['labels'][1]*360))
+				#print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0][0]*360))
+				#print('train: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, train['labels'][1][0]*360))
 				output_values = output.eval(feed_dict = {x:valid['images'][:3]})
-				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0]*360))
-				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1]*360))
-				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[2][0]*360, valid['labels'][2]*360))
+				print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0][0]*360))
+				print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1][0]*360))
+				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[2][0]*360, valid['labels'][2][0]*360))
 
 				output_angles_valid = []
 				for i in range(num_valid_batches):
@@ -202,7 +206,7 @@ with graph.as_default():
 				print(output_angles_valid)
 
 
-			if iteration % 50 == 0:
+			if iteration % (5*DISPLAY_INTERVAL) == 0:
 
 				train_accuracy = np.mean( [loss.eval( \
 					feed_dict={x:train['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
@@ -219,7 +223,7 @@ with graph.as_default():
 				#min_in_grad = math.sqrt(min_valid_accuracy) * 360.0
 				min_in_grad = min_valid_accuracy * 360.0
 				
-				print('iter {0:3}: train_loss={1:0.4f}, valid_loss={2:0.4f} (min={3:0.4f} ({4:0.2f} gr.))'.\
+				print('iter {0:3}: train_loss={1:0.4f}, valid_loss={2:0.4f} (min={3:0.4f} ({4:0.2f} grad.))'.\
 					format(iteration, train_accuracy, valid_accuracy, min_valid_accuracy, min_in_grad))
 
 				"""
@@ -236,7 +240,7 @@ with graph.as_default():
 			#print(a1, a2, y_data)			
 
 		# Save the comp. graph
-
+		print('Save the comp. graph')
 		x_data, y_data =  valid['images'], valid['labels'] #mnist.train.next_batch(BATCH_SIZE)		
 		writer = tf.summary.FileWriter("output", sess.graph)
 		print(sess.run(train_op, {x: x_data, y: y_data}))
@@ -252,10 +256,15 @@ with graph.as_default():
 		print('Test of model')
 		print('Test_accuracy={0:0.4f}'.format(test_accuracy))
 		"""
+
+		"""
+		print('Test model')
 		test_accuracy = loss.eval(feed_dict={x:test['images'][0:BATCH_SIZE]})
 		print('Test_accuracy={0:0.4f}'.format(test_accuracy))				
+		"""
 
 		# Rotate images:
+		print('Rotate images')
 		in_dir = 'data'
 		out_dir = 'valid'
 		file_names = valid['filenames']
