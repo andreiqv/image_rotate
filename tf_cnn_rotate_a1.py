@@ -34,7 +34,7 @@ from rotate_images import *
 DISPLAY_INTERVAL = 1 # =10
 
 BATCH_SIZE = 5
-NUM_ITERS = 50 # 50000
+NUM_ITERS = 500 # 50000
 
 data_file = "dump.gz"
 f = gzip.open(data_file, 'rb')
@@ -169,13 +169,15 @@ with graph.as_default():
 	#loss = tf.nn.l2_loss(output - y)
 	loss = tf.losses.mean_squared_error(labels=y, predictions=output)
 	
-	train_op = tf.train.AdagradOptimizer(0.01).minimize(loss)
+	train_op = tf.train.AdagradOptimizer(0.005).minimize(loss)
 	#train_op = tf.train.GradientDescentOptimizer(0.001).minimize(loss)
 		
 	#loss = tf.nn.softmax_cross_entropy_with_logits_v2(logits=logits, labels=y)
 	#train_op = tf.train.AdagradOptimizer(0.01).minimize(loss)
 	#correct_prediction = tf.equal(tf.argmax(logits,1), tf.argmax(y,1))
 	#accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+	output_angles_valid = []
 
 	# 3. Execute the graph on batches of input data.
 	with tf.Session() as sess:  # Connect to the TF runtime.
@@ -192,7 +194,7 @@ with graph.as_default():
 				print('valid: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, valid['labels'][0][0]*360))
 				print('valid: {0:.2f} - {1:.2f}'.format(output_values[1][0]*360, valid['labels'][1][0]*360))
 				#print('valid: {0:.2f} - {1:.2f}'.format(output_values[2][0]*360, valid['labels'][2][0]*360))
-
+				
 				output_angles_valid = []
 				for i in range(num_valid_batches):
 					feed_dict = {x:valid['images'][i*BATCH_SIZE:(i+1)*BATCH_SIZE]}
@@ -267,8 +269,10 @@ with graph.as_default():
 		print('Rotate images')
 		in_dir = 'data'
 		out_dir = 'valid'
-		file_names = valid['filenames']
 		angles = output_angles_valid
+		file_names = valid['filenames'][:len(angles)]
+		print('len(angles) =', len(angles))
+		print('len(file_names) =', len(file_names))
 		rotate_images_with_angles(in_dir, out_dir, file_names, angles)
 		
 		"""

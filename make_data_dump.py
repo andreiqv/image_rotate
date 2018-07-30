@@ -48,6 +48,7 @@ def load_data(in_dir, img_size=(540,540)):
 	return data
 	#return train, valid, test
 
+
 def split_data(data, ratio=(6,1,3)):
 
 	len_data = len(data['images'])
