@@ -1,19 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """ 
-in 
-- conv 5х5 - pool 3х3 
-- conv 4х4 - pool 3х3  
-- conv 3х3 - pool 2х2  
-- reshape - 1024 - dense -dense - mse
-
-Validation:
-train: 296.32 - 194.00
-train: 326.57 - 356.00
-train: 378.93 - 156.00
-valid: 75.48 - 76.00
-valid: 239.89 - 51.00
-iteration 420: train_acc=0.2516, valid_acc=0.2653
 
 """
 
@@ -147,18 +134,20 @@ with graph.as_default():
 	fullconn_input_size = 5*5*64
 	p_flat = tf.reshape(p5, [-1, fullconn_input_size])
 
-	f1 = fullyConnectedLayer(p_flat, input_size=fullconn_input_size, num_neurons=1024, 
+	f1 = fullyConnectedLayer(p_flat, input_size=fullconn_input_size, num_neurons=256, 
 		func=tf.nn.relu, name='F1')
 
 	drop1 = tf.layers.dropout(inputs=f1, rate=0.4)	
-	f2 = fullyConnectedLayer(drop1, input_size=1024, num_neurons=256, 
-		func=tf.nn.relu, name='F2')
+	f2 = fullyConnectedLayer(drop1, input_size=256, num_neurons=1, 
+		func=None, name='F2')
 	
+	"""
 	drop2 = tf.layers.dropout(inputs=f2, rate=0.4)	
 	f3 = fullyConnectedLayer(drop2, input_size=256, num_neurons=1, 
-		func=None, name='F3')	
+		func=tf.sigmoid, name='F3')	
+	"""
 
-	output = f3
+	output = f2
 	print('output =', output)
 
 	# 2. Add nodes that represent the optimization algorithm.

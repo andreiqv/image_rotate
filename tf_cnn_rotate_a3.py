@@ -137,20 +137,18 @@ with graph.as_default():
 	x_image = tf.reshape(x, [-1, 540, 540, 1])
 
 	# conv layers
-	p1 = convPoolLayer(x_image, kernel=(5,5), pool_size=3, num_in=1, num_out=16, 
+	p1 = convPoolLayer(x_image, kernel=(4,4), pool_size=3, num_in=1, num_out=16, 
 		func=tf.nn.relu, name='1') # 180 x 180
-	p2 = convPoolLayer(p1, kernel=(5,5), pool_size=3, num_in=16, num_out=16, 
+	p2 = convPoolLayer(p1, kernel=(4,4), pool_size=3, num_in=16, num_out=16, 
 		func=tf.nn.relu, name='2')  # 60 x 60 
-	p3 = convPoolLayer(p2, kernel=(4,4), pool_size=3, num_in=16, num_out=32, 
+	p3 = convPoolLayer(p2, kernel=(3,3), pool_size=3, num_in=16, num_out=32, 
 		func=tf.nn.relu, name='3')   # 20 x 20 
-	p4 = convPoolLayer(p3, kernel=(3,3), pool_size=2, num_in=32, num_out=32, 
+	p4 = convPoolLayer(p3, kernel=(3,3), pool_size=2, num_in=32, num_out=64, 
 		func=tf.nn.relu, name='4')   # 10 x 10 
-	p5 = convPoolLayer(p4, kernel=(3,3), pool_size=2, num_in=32, num_out=64, 
-		func=tf.nn.relu, name='5')   # 5 x 5
 
 	# fully-connected layers
-	fullconn_input_size = 5*5*64
-	p_flat = tf.reshape(p5, [-1, fullconn_input_size])
+	fullconn_input_size = 10*10*64
+	p_flat = tf.reshape(p4, [-1, fullconn_input_size])
 
 	f1 = fullyConnectedLayer(p_flat, input_size=fullconn_input_size, num_neurons=1024, 
 		func=tf.nn.relu, name='F1')
