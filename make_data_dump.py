@@ -85,7 +85,7 @@ def split_data(data, ratio=(6,1,3)):
 	return splited_data
 
 
-if __name__ == '__main__':
+def get_data():
 
 	in_dir = 'data'
 	data1 = load_data(in_dir, img_size=(540,540))
@@ -99,11 +99,18 @@ if __name__ == '__main__':
 	print('valid', data['valid']['size'])
 	print('test',  data['test']['size'])
 
+	return data
+
+
+if __name__ == '__main__':
+
+	data = get_data()
+
 	# add_pickle
 
 	dump = pickle.dumps(data)
 	print('dump.pickle')
 
 	with open('dump.pickle', 'wb') as f:
-		pickle.dump(dump, f)
+		pickle.dump(dump, f, protocol=4)
 		print('dump was written')
