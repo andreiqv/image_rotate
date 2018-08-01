@@ -22,9 +22,13 @@ def image_rotate_random(in_file_path, out_dir):
 	print('cx={0}, cy={1}'.format(cx,cy))
 	print('d={0:.3f}, a={1:.3f}'.format(d,a))
 
-	for i in range(0, 12):
 
-		angle = i*30 + randint(0,29)
+	num = 24 # =12
+
+	for i in range(num):
+
+		d_angle = int(360 / num)
+		angle = i * d_angle + randint(0, d_angle-1)
 		print(angle)
 
 		img_rot = img.rotate(angle)
