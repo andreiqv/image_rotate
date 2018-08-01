@@ -102,9 +102,8 @@ if __name__ == '__main__':
 	# add_pickle
 
 	dump = pickle.dumps(data)
-	print('dump done')
-	f = gzip.open('dump.gz', 'wb')
-	print('gzip done')
-	f.write(dump)
-	print('dump was written')
-	f.close()
+	print('dump.pickle')
+
+	with open('dump.pickle', 'wb') as f:
+		pickle.dump(dump, f)
+		print('dump was written')

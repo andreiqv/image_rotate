@@ -41,9 +41,14 @@ else:
 
 
 BATCH_SIZE = 5
-data_file = "dump.gz"
-f = gzip.open(data_file, 'rb')
-data = pickle.load(f)
+
+#data_file = "dump.gz"
+#f = gzip.open(data_file, 'rb')
+#data = pickle.load(f)
+
+with open('dump.pickle', 'rb') as f:
+	data = pickle.load(f)
+
 #data_1 = load_data(in_dir, img_size=(540,540))
 #data = split_data(data1, ratio=(6,1,3))
 
