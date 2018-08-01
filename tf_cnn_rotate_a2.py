@@ -41,11 +41,12 @@ else:
 
 
 BATCH_SIZE = 5
-data_file = "dump.gz"
-f = gzip.open(data_file, 'rb')
-data = pickle.load(f)
-#data_1 = load_data(in_dir, img_size=(540,540))
-#data = split_data(data1, ratio=(6,1,3))
+#data_file = "dump.gz"
+#f = gzip.open(data_file, 'rb')
+#data = pickle.load(f)
+
+import make_data_dump
+data = make_data_dump.get_data()
 
 train = data['train']
 valid = data['valid']
