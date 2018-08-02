@@ -41,12 +41,15 @@ else:
 
 
 BATCH_SIZE = 5
-#data_file = "dump.gz"
-#f = gzip.open(data_file, 'rb')
-#data = pickle.load(f)
 
-import make_data_dump
-data = make_data_dump.get_data()
+GZIP = False
+if GZIP: # load data from dump.gz
+	f = gzip.open('dump.gz', 'rb')
+	data = pickle.load(f)
+else:
+	# use raw jpg files
+	import make_data_dump
+	data = make_data_dump.get_data()
 
 train = data['train']
 valid = data['valid']
@@ -194,7 +197,7 @@ with graph.as_default():
 		sess.run(init)	# Randomly initialize weights.
 		for iteration in range(NUM_ITERS):			  # Train iteratively for NUM_iterationS.		 
 
-			if iteration % (20*DISPLAY_INTERVAL) == 0:
+			if iteration % (50*DISPLAY_INTERVAL) == 0:
 
 				#output_values = output.eval(feed_dict = {x:train['images'][:3]})
 				#print('train: {0:.2f} - {1:.2f}'.format(output_values[0][0]*360, train['labels'][0][0]*360))
@@ -214,7 +217,7 @@ with graph.as_default():
 					t = [output_values[i][0]*360.0 for i in range(output_values.shape[0])]
 					#print(t)
 					output_angles_valid += t
-				print(output_angles_valid)
+				print(output_angles_valid[:max(len(valid),10)])
 
 
 			if iteration % (5*DISPLAY_INTERVAL) == 0:
