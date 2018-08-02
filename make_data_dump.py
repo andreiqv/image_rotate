@@ -111,6 +111,12 @@ if __name__ == '__main__':
 	dump = pickle.dumps(data)
 	print('dump.pickle')
 
-	with open('dump.pickle', 'wb') as f:
-		pickle.dump(dump, f, protocol=4)
-		print('dump was written')
+	GZIP = True
+	if GZIP:
+		with gzip.open('dump.gz', 'wb') as f:
+			f.write(dump)
+			print('gzip dump was written')
+	else:
+		with open('dump.pickle', 'wb') as f:
+			pickle.dump(dump, f, protocol=4)
+			print('dump was written')
